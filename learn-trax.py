@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ### PAN
 # background: control_change channel=0 control=10 value=56 time=0
 # foreground: control_change channel=0 control=10 value=76 time=0
