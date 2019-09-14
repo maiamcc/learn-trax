@@ -45,7 +45,7 @@ def argument_parser():
     return parser
 
 
-def rm_volume_and_pan_set(track: MidiTrack):
+def rm_volume_and_pan_set(track: MidiTrack) -> MidiTrack:
     return MidiTrack([msg for msg in track if not is_vol_control_or_pan_control(msg)])
 
 
@@ -102,10 +102,11 @@ if __name__ == '__main__':
     # TODO: make all tracks same instrument?
 
     # idk how consistent this is but sib-generated midis, first track is just metadata
+    meta_track = mid.tracks[0]
     tracks = [rm_volume_and_pan_set(t) for t in mid.tracks[1:]]
 
     alto_tracks = foreground_track_at_index(tracks, 2)
 
-    outfile = MidiFile()
-    outfile.tracks = alto_tracks
+    outfile = MidiFile(ticks_per_beat=mid.ticks_per_beat)
+    outfile.tracks = [meta_track.copy()] + alto_tracks
     outfile.save('alto.mid')
