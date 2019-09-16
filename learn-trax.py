@@ -20,6 +20,7 @@ import argparse
 from copy import deepcopy
 from typing import List
 
+from midi2audio import FluidSynth
 from mido import MidiFile
 from mido.midifiles.tracks import MidiTrack
 from mido.messages.messages import Message
@@ -40,6 +41,16 @@ def argument_parser():
         'input_mid',
         type=str,
         help='path to base midi file'
+    )
+    parser.add_argument(
+        'file_prefix',
+        type=str,
+        help='prefix for outfiles: <prefix>-alto.wav'
+    )
+    parser.add_argument(
+        'voice_parts',
+        type=str,
+        help='comma-separated list of voice parts to be used for naming files: fair-phyllis-<sop>.wav'
     )
 
     return parser
@@ -93,9 +104,26 @@ def foreground_track_at_index(tracks: List[MidiTrack], index: int) -> List[MidiT
     return ret
 
 
+def practice_track_at_index(voice_tracks: List[MidiTrack], meta_track: MidiTrack, base_filename: str, i: int):
+    mid_name = '{}.mid'.format(base_filename)
+    wav_name = '{}.wav'.format(base_filename)
+
+    adjusted_tracks = foreground_track_at_index(voice_tracks, i)
+
+    outfile = MidiFile(ticks_per_beat=mid.ticks_per_beat)
+    outfile.tracks = [meta_track] + adjusted_tracks
+    outfile.save(mid_name)
+
+    # Fluidsynth doesn't seem to respect volume/panning, which makes this useless -.-
+    # fs.midi_to_audio(mid_name, wav_name)
+
+
 if __name__ == '__main__':
     parser = argument_parser()
     args = parser.parse_args()
+    fs = FluidSynth()
+
+    voice_parts = args.voice_parts.split(',')
 
     mid = MidiFile(args.input_mid)
 
@@ -103,10 +131,9 @@ if __name__ == '__main__':
 
     # idk how consistent this is but sib-generated midis, first track is just metadata
     meta_track = mid.tracks[0]
-    tracks = [rm_volume_and_pan_set(t) for t in mid.tracks[1:]]
+    voice_tracks = [rm_volume_and_pan_set(t) for t in mid.tracks[1:]]
 
-    alto_tracks = foreground_track_at_index(tracks, 2)
-
-    outfile = MidiFile(ticks_per_beat=mid.ticks_per_beat)
-    outfile.tracks = [meta_track.copy()] + alto_tracks
-    outfile.save('alto.mid')
+    for i in range(len(voice_tracks)):
+        base_filename = '{}-{}'.format(args.file_prefix, voice_parts[i])
+        print('making practice track {} at index: {}'.format(base_filename, i))
+        practice_track_at_index(voice_tracks, meta_track.copy(), base_filename, i)
