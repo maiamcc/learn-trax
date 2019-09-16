@@ -20,7 +20,6 @@ import argparse
 from copy import deepcopy
 from typing import List
 
-from midi2audio import FluidSynth
 from mido import MidiFile
 from mido.midifiles.tracks import MidiTrack
 from mido.messages.messages import Message
@@ -106,7 +105,6 @@ def foreground_track_at_index(tracks: List[MidiTrack], index: int) -> List[MidiT
 
 def practice_track_at_index(voice_tracks: List[MidiTrack], meta_track: MidiTrack, base_filename: str, i: int):
     mid_name = '{}.mid'.format(base_filename)
-    wav_name = '{}.wav'.format(base_filename)
 
     adjusted_tracks = foreground_track_at_index(voice_tracks, i)
 
@@ -114,14 +112,10 @@ def practice_track_at_index(voice_tracks: List[MidiTrack], meta_track: MidiTrack
     outfile.tracks = [meta_track] + adjusted_tracks
     outfile.save(mid_name)
 
-    # Fluidsynth doesn't seem to respect volume/panning, which makes this useless -.-
-    # fs.midi_to_audio(mid_name, wav_name)
-
 
 if __name__ == '__main__':
     parser = argument_parser()
     args = parser.parse_args()
-    fs = FluidSynth()
 
     voice_parts = args.voice_parts.split(',')
 
