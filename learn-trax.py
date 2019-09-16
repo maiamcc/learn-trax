@@ -110,6 +110,7 @@ def practice_track_at_index(voice_tracks: List[MidiTrack], meta_track: MidiTrack
 
     outfile = MidiFile(ticks_per_beat=mid.ticks_per_beat)
     outfile.tracks = [meta_track] + adjusted_tracks
+    # TODO: save to same directory as infile
     outfile.save(mid_name)
 
 
@@ -128,6 +129,7 @@ if __name__ == '__main__':
     voice_tracks = [rm_volume_and_pan_set(t) for t in mid.tracks[1:]]
 
     for i in range(len(voice_tracks)):
+        # TODO: derive filename (and path?) from infile
         base_filename = '{}-{}'.format(args.file_prefix, voice_parts[i])
         print('making practice track {} at index: {}'.format(base_filename, i))
         practice_track_at_index(voice_tracks, meta_track.copy(), base_filename, i)
