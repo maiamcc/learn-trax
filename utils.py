@@ -16,7 +16,7 @@
 
 import argparse
 from copy import deepcopy
-from typing import Dict, List
+from typing import List
 
 from mido import MidiFile
 from mido.midifiles.tracks import MidiTrack
@@ -106,12 +106,11 @@ def practice_track_with_foregrounds(tpb: int, voice_tracks: List[MidiTrack], met
     outfile.save(mid_name)
 
 
-def track_names_to_indices(tracks: List[MidiTrack]) -> Dict[str, int]:
-    res = {}
+def ordered_track_names(tracks: List[MidiTrack]) -> List[str]:
+    names = []
     for i, t in enumerate(tracks):
-        name = track_name(t)
-        res[name] = i
-    return res
+        names.append(track_name(t))
+    return names
 
 
 def track_name(t: MidiTrack) -> str:

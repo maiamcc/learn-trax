@@ -36,15 +36,16 @@ if __name__ == '__main__':
 
     # idk how consistent this is but sib-generated midis, first track is just metadata
     meta_track, voice_tracks = utils.cleaned_meta_and_voice_tracks(mid)
-    names_indices = utils.track_names_to_indices(voice_tracks)
+    names = utils.ordered_track_names(voice_tracks)
     requested = [r.lower() for r in args.track_names.split(",")]
 
     indices = []
     for req in requested:
-        i = names_indices.get(req)
-        if not i:
+        try:
+            i = names.index(req)
+        except ValueError:
             raise Exception("Couldn't find track with name: '{}'. (Known names: {})".
-                            format(req, ", ".join(names_indices.keys())))
+                            format(req, ", ".join(names)))
         indices.append(i)
 
     utils.practice_track_with_foregrounds(mid.ticks_per_beat, voice_tracks, meta_track, args.outfile, indices)
