@@ -16,11 +16,12 @@
 
 import argparse
 from copy import deepcopy
-from typing import List
+from typing import Dict, List
 
 from mido import MidiFile
 from mido.midifiles.tracks import MidiTrack
 from mido.messages.messages import Message
+from mido.midifiles.meta import MetaMessage
 
 VOL_CONTROL = 7
 PAN_CONTROL = 10
@@ -43,7 +44,10 @@ def is_vol_control_or_pan_control(msg: Message) -> bool:
 def cleaned_meta_and_voice_tracks(mid: MidiFile) -> (MidiTrack, List[MidiTrack]):
     # idk how consistent this is but sib-generated midis, first track is just metadata
     meta_track = mid.tracks[0]
+
+    # TODO: make all tracks same instrument?
     voice_tracks = [rm_volume_and_pan_set(t) for t in mid.tracks[1:]]
+
     return meta_track, voice_tracks
 
 
@@ -100,3 +104,18 @@ def practice_track_with_foregrounds(tpb: int, voice_tracks: List[MidiTrack], met
     outfile.tracks = [meta_track] + adjusted_tracks
     # TODO: save to same directory as infile
     outfile.save(mid_name)
+
+
+def track_names_to_indices(tracks: List[MidiTrack]) -> Dict[str, int]:
+    res = {}
+    for i, t in enumerate(tracks):
+        name = track_name(t)
+        res[name] = i
+    return res
+
+
+def track_name(t: MidiTrack) -> str:
+    for msg in t:
+        if isinstance(msg, MetaMessage) and msg.name:
+            return msg.name.lower()
+    raise Exception("No name found for track!")

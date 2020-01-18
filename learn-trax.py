@@ -17,7 +17,7 @@ def argument_parser():
     parser.add_argument(
         'file_prefix',
         type=str,
-        help='prefix for outfiles: <prefix>-alto.wav'
+        help='prefix for outfiles: <prefix>-alto.mid'
     )
     parser.add_argument(
         'voice_parts',
