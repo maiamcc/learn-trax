@@ -24,6 +24,12 @@ def argument_parser():
         type=str,
         help='comma-separated list of voice parts to be used for naming files: fair-phyllis-<sop>.wav'
     )
+    parser.add_argument(
+        '--mid',
+        type=bool,
+        default=False,
+        help='if true, output tracks as .mid files. By default, will be .wav files.'
+    )
 
     return parser
 
@@ -31,6 +37,8 @@ def argument_parser():
 if __name__ == '__main__':
     parser = argument_parser()
     args = parser.parse_args()
+
+    as_wav = not args.mid
 
     voice_parts = args.voice_parts.split(',')
 
@@ -45,4 +53,4 @@ if __name__ == '__main__':
         # TODO: derive filename (and path?) from infile
         base_filename = '{}-{}'.format(args.file_prefix, voice_parts[i])
         print('making practice track {} at index: {}'.format(base_filename, i))
-        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_filename, i)
+        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_filename, i, as_wav, True)

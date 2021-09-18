@@ -16,8 +16,10 @@
 
 import argparse
 from copy import deepcopy
+import os
 from typing import List
 
+from midi2audio import FluidSynth
 from mido import MidiFile
 from mido.midifiles.tracks import MidiTrack
 from mido.messages.messages import Message
@@ -32,6 +34,7 @@ VOL_FOREGROUND = 120
 PAN_BACKGROUND = 56
 PAN_FOREGROUND = 76
 
+FS = FluidSynth()
 
 def rm_volume_and_pan_set(track: MidiTrack) -> MidiTrack:
     return MidiTrack([msg for msg in track if not is_vol_control_or_pan_control(msg)])
@@ -91,19 +94,25 @@ def foreground_tracks_at_indices(tracks: List[MidiTrack], indices: List[int]) ->
     return ret
 
 
-def practice_track_at_index(tpb: int, voice_tracks: List[MidiTrack], meta_track: MidiTrack, base_filename: str, i: int):
-    practice_track_with_foregrounds(tpb, voice_tracks, meta_track, base_filename, [i])
+def practice_track_at_index(tpb: int, voice_tracks: List[MidiTrack], meta_track: MidiTrack, base_filename: str, i: int, as_wav=False, clean_up=True):
+    practice_track_with_foregrounds(tpb, voice_tracks, meta_track, base_filename, [i], as_wav, clean_up)
 
 
-def practice_track_with_foregrounds(tpb: int, voice_tracks: List[MidiTrack], meta_track: MidiTrack, base_filename: str, indices: List[int]):
+def practice_track_with_foregrounds(tpb: int, voice_tracks: List[MidiTrack], meta_track: MidiTrack, base_filename: str, indices: List[int], as_wav=False, clean_up=True):
     mid_name = '{}.mid'.format(base_filename)
+    wav_name = '{}.wav'.format(base_filename)
 
     adjusted_tracks = foreground_tracks_at_indices(voice_tracks, indices)
 
     outfile = MidiFile(ticks_per_beat=tpb)
     outfile.tracks = [meta_track] + adjusted_tracks
+
     # TODO: save to same directory as infile
     outfile.save(mid_name)
+    if as_wav:
+        FS.midi_to_audio(mid_name, wav_name)
+        if clean_up:
+            os.remove(mid_name)
 
 
 def ordered_track_names(tracks: List[MidiTrack]) -> List[str]:
