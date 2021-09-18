@@ -110,6 +110,7 @@ def practice_track_with_foregrounds(tpb: int, voice_tracks: List[MidiTrack], met
     # TODO: save to same directory as infile
     outfile.save(mid_name)
     if as_wav:
+        # TODO: suppress FluidSynth stdout/stderr
         FS.midi_to_audio(mid_name, wav_name)
         if clean_up:
             os.remove(mid_name)

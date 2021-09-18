@@ -26,10 +26,17 @@ def argument_parser():
     )
     parser.add_argument(
         '--mid',
-        type=bool,
+        action='store_true',
         default=False,
         help='if true, output tracks as .mid files. By default, will be .wav files.'
     )
+    parser.add_argument(
+        '--wav_input',
+        action='store_true',
+        default=False,
+        help='if true, produces a .wav version of the input midi file as well as learn-trax'
+    )
+
 
     return parser
 
@@ -54,3 +61,10 @@ if __name__ == '__main__':
         base_filename = '{}-{}'.format(args.file_prefix, voice_parts[i])
         print('making practice track {} at index: {}'.format(base_filename, i))
         utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_filename, i, as_wav, True)
+
+    if args.wav_input:
+        # TODO: it's dumb to import this lib/make a fs object here AND in utils
+        from midi2audio import FluidSynth
+        fs = FluidSynth()
+        wav_name = '{}.wav'.format(args.file_prefix)
+        fs.midi_to_audio(args.input_mid, wav_name)

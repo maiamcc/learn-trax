@@ -14,6 +14,8 @@ Make learning tracks from midi files! `learn-trax` will take your input midi fil
 ```
 From input track `locus-iste.mid`, produce tracks `locus-sop.wav`, `locus-alto.wav`, etc. (the names provided are for the 1st/2nd/3rd/4th instruments in the midi file, respectively).
 
+To make a `.wav` version of the input midi (in addition to the practice tracks), pass `--wav_input`.
+
 To output as `.mid` files instead of `.wav` (much faster and doesn't require FluidSynth setup), pass `--mid`.
 
 ## Limitations/TODOs
@@ -21,7 +23,7 @@ To output as `.mid` files instead of `.wav` (much faster and doesn't require Flu
 * ideally, this could change instruments for you:
 	* turn all of the tracks into the same, inoffensive instrument (probably piano -- depending on the soundfont, midi choir sounds awful)
 	* turn the foregrounded track into a different instrument for maximum contrast
-* option to also `.wav`-ify the input track
+* FluidSynth has noisy stdout/(stderr?) that doesn't actually indicate a problem, should silence it
 * `learn-trax` strips the first midi track because for Sibelius-generated midi files (what I am working with), this is always metadata. Is this true of all midi files? I don't actually know! 🙃
 * generated learn trax should be outputted to the same directory as the infile
 * should be able to auto-detect file prefix from infile, e.g. "hallelujah-chorus.mid" should generate "hallelujah-chorus-sop.wav" etc. without user intervention
