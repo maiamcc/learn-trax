@@ -24,19 +24,6 @@ def argument_parser():
         type=str,
         help='comma-separated list of voice parts to be used for naming files: fair-phyllis-<sop>.wav'
     )
-    parser.add_argument(
-        '--mid',
-        action='store_true',
-        default=False,
-        help='if true, output tracks as .mid files. By default, will be .wav files.'
-    )
-    parser.add_argument(
-        '--wav_input',
-        action='store_true',
-        default=False,
-        help='if true, produces a .wav version of the input midi file as well as learn-trax'
-    )
-
 
     return parser
 
@@ -44,8 +31,6 @@ def argument_parser():
 if __name__ == '__main__':
     parser = argument_parser()
     args = parser.parse_args()
-
-    as_wav = not args.mid
 
     voice_parts = args.voice_parts.split(',')
 
@@ -60,11 +45,4 @@ if __name__ == '__main__':
         # TODO: derive filename (and path?) from infile
         base_filename = '{}-{}'.format(args.file_prefix, voice_parts[i])
         print('making practice track {} at index: {}'.format(base_filename, i))
-        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_filename, i, as_wav, True)
-
-    if args.wav_input:
-        # TODO: it's dumb to import this lib/make a fs object here AND in utils
-        from midi2audio import FluidSynth
-        fs = FluidSynth()
-        wav_name = '{}.wav'.format(args.file_prefix)
-        fs.midi_to_audio(args.input_mid, wav_name)
+        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_filename, i)
