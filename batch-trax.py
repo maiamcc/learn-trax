@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+from datetime import datetime
 import os
 import os.path
 
@@ -28,13 +29,22 @@ if __name__ == '__main__':
     parser = argument_parser()
     args = parser.parse_args()
 
-    midi_files = sorted([filename for filename in os.listdir(args.input_dir) if filename.endswith('.mid')])
-    print('Will process {} midi files...'.format(len(midi_files)))
+    input_dir = args.input_dir
+
+    midi_files = sorted([filename for filename in os.listdir(input_dir) if filename.endswith('.mid')])
+    if not midi_files:
+        raise Exception('No midi files found, sorry :-/')
+
+    output_dir = os.path.join(input_dir, 'learntrax_{}'.format(datetime.now().strftime("%Y%m%d%H%M%S")))
+    os.mkdir(output_dir)
+
+    print('Will process {} midi files to directory: {}'.format(len(midi_files), output_dir))
     print()
 
     for file in midi_files:
         print('+ {}'.format(file))
         trax.tracks_for_file(os.path.join(args.input_dir, file),
+            output_dir=output_dir,
             ignore_voices = args.ignore.split(',') if args.ignore else None
         )
         print()

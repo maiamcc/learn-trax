@@ -17,6 +17,11 @@ def argument_parser():
         help='path to base midi file'
     )
     parser.add_argument(
+        '--output_dir', '-o',
+        type=str,
+        help='directory in which to output tracks (may be absolute, or relative to directory of input_mid). By default, tracks are saved to the same directory as input_mid.'
+    )
+    parser.add_argument(
         '--ignore', '-X',
         type=str,
         help='comma-separated list of track names to IGNORE, i.e. not to create a foregrounded track for. Case insensitive.'
@@ -39,6 +44,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     trax.tracks_for_file(args.input_mid,
+                    output_dir = args.output_dir,
                     ignore_voices = args.ignore.split(',') if args.ignore else None,
                     voices = args.voices.split(',') if args.voices else None,
                     prefix = args.prefix

@@ -8,6 +8,7 @@ import utils
 
 
 def tracks_for_file(input_mid: str,
+                    output_dir: t.Optional[str] = None,
                     ignore_voices: t.Optional[t.Set[str]] = None,
                     voices: t.Optional[t.List[str]] = None,
                     prefix: t.Optional[str] = None):
@@ -31,6 +32,14 @@ def tracks_for_file(input_mid: str,
             print('(ignoring track for {}...)'.format(voice))
             continue
 
-        base_filename = os.path.join(directory, '{}-{}'.format(prefix, voice))
+        if not output_dir:
+            # by default, output files to the same directory as the input mid
+            output_dir = directory
+        elif not os.path.isabs(output_dir):
+            # if output_dir isn't an absolute path, it's assumed relative to directory of the input mid
+            output_dir = os.path.join(directory, output_dir)
+        # otherwise, it's just an absolute path
+
+        base_outfile_filename = os.path.join(output_dir, '{}-{}'.format(prefix, voice))
         print('making practice track for voice: {}'.format(voice))
-        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_filename, i)
+        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_outfile_filename, i)
