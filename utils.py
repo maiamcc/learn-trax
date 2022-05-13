@@ -50,6 +50,17 @@ def cleaned_meta_and_voice_tracks(mid: MidiFile) -> (MidiTrack, List[MidiTrack])
 
     return meta_track, voice_tracks
 
+def meta_track_with_title(meta_track: MidiTrack, title: str) -> MidiTrack:
+    """Returns a copy of the given meta track, altered so that resulting midi has the given title."""
+    result = meta_track.copy()
+    title_msg = MetaMessage('track_name', name=title)
+
+    # insert title message at the very beginning, it takes precedence over
+    # any later title messages lolidk
+    result.insert(0, title_msg)
+
+    return result
+
 
 def vol_background() -> Message:
     return Message('control_change', control=VOL_CONTROL, value=VOL_BACKGROUND)

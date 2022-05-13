@@ -39,6 +39,9 @@ def tracks_for_file(input_mid: str,
             output_dir = os.path.join(directory, output_dir)
         # otherwise, it's just an absolute path
 
-        base_outfile_filename = os.path.join(output_dir, '{}-{}'.format(prefix, voice))
+        outfile_name = '{}-{}'.format(prefix, voice)
+        outfile_path = os.path.join(output_dir, outfile_name)
         print('making practice track for voice: {}'.format(voice))
-        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks, meta_track.copy(), base_outfile_filename, i)
+        utils.practice_track_at_index(mid.ticks_per_beat, voice_tracks,
+                                      utils.meta_track_with_title(meta_track, outfile_name),
+                                      outfile_path, i)
