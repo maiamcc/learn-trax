@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import os.path
-import typing as t
-
-from mido import MidiFile
 
 import trax
 

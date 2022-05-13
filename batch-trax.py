@@ -5,8 +5,6 @@ from datetime import datetime
 import os
 import os.path
 
-from mido import MidiFile
-
 import trax
 
 
