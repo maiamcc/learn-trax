@@ -33,6 +33,12 @@ PAN_BACKGROUND = 56
 PAN_FOREGROUND = 76
 
 
+class TrackNotFoundException(Exception):
+    def __init__(self, requested_track: str, existing_tracks: List[str]):
+        msg = f"Couldn't find track with name: '{requested_track}'. (Known names: {', '.join(existing_tracks)})"
+        super().__init__(msg)
+
+
 def rm_volume_and_pan_set(track: MidiTrack) -> MidiTrack:
     return MidiTrack([msg for msg in track if not is_vol_control_or_pan_control(msg)])
 
