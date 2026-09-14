@@ -6,6 +6,7 @@ Make learning tracks from midi files! `learn-trax` will take your input midi fil
 Python requirements: `pip install -r requirements.txt`
 
 ## Usage
+### Single file at a time
 ```
 ./learn-trax.py locus-iste.mid
 ```
@@ -22,11 +23,13 @@ From input track `locus-iste.mid`, produce tracks `locus-sop.mid`, `locus-alto.m
 
 Produces tracks `stanford-bluebird-soprano.mid` etc., _not_ producing practice tracks for the midi tracks named Solo or Piano.
 
+### From directory / batched
 ```
 ./batch-trax.py ~/Documents/fall_season/midi
 ```
 Produces practice tracks (passing through any provided arguments) for any `.mid` file in the given directory.
 
+### Via YAML config
 ```
 ./yaml-trax.py path/to/some/input.yaml
 ```
@@ -60,7 +63,7 @@ locus:
         bass:
             - bass
 ```
-You may pass multiple midi specs, each indicating the input midi file and what tracks to construct, given a map of track name -> constituent tracks to foreground.
+You may pass multiple midi specs, each indicating the input midi file and what tracks to construct (as indicated by a map of track name -> constituent tracks to foreground).
 
 
 ## Limitations/TODOs
