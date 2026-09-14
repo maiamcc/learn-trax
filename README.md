@@ -27,6 +27,41 @@ Produces tracks `stanford-bluebird-soprano.mid` etc., _not_ producing practice t
 ```
 Produces practice tracks (passing through any provided arguments) for any `.mid` file in the given directory.
 
+```
+./yaml-trax.py path/to/some/input.yaml
+```
+Makes practice tracks according to the configuration given in the yaml file, which might look like:
+```yaml
+fair:  # will be used as file name prefix
+    input_mid: '/my/midis/fair-in-face.mid'  # this directory will be used as outfile directory
+    tracks:
+        s-ssa_s1:  # e.g. this will output to `/my/midis/fair_s-ssa_s1.mid
+            - soprano
+            - ssa_s1
+        s-ssa_s2:
+            - soprano
+            - ssa_s2
+        a-ssa_s2:
+            - alto
+            - ssa_s2
+        a-ssa_a:
+            - alto
+            - ssa_a
+        ...
+locus:
+    input_mid: '/my/midis/locusiste.mid'
+    tracks:
+        sop:
+            - soprano
+        alto:
+            - alto
+        tenor:
+            - tenor
+        bass:
+            - bass
+```
+You may pass multiple midi specs, each indicating the input midi file and what tracks to construct, given a map of track name -> constituent tracks to foreground.
+
 
 ## Limitations/TODOs
 * ideally, you could set the volume/pan adjustment via the CLI (right now they're constant)
